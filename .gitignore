@@ -37,3 +37,8 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Agent rule files
+AGENTS.md
+CLAUDE.md
+
+

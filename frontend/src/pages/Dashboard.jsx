@@ -35,27 +35,32 @@ export default function Dashboard({ onCreateExam, onViewExam }) {
 
   return (
     <div>
-      <PageHeader title="Exams">
-        <Button onClick={onCreateExam}>Create Exam</Button>
+      <PageHeader title="Exams Dashboard">
+        <Button onClick={onCreateExam}>+ Create New Exam</Button>
       </PageHeader>
 
       {exams.length === 0 ? (
-        <div className="border border-stone-200 bg-white p-6 text-center">
-          <p className="text-sm text-stone-600 mb-3">
-            No exams yet. Create your first exam.
+        <div className="border border-stone-200 bg-white p-8 text-center space-y-3">
+          <p className="text-sm text-stone-700 font-medium">
+            No exams created yet.
           </p>
-          <Button onClick={onCreateExam}>Create Exam</Button>
+          <p className="text-xs text-stone-500 max-w-sm mx-auto">
+            To upload student answers, first create an examination with your questions, maximum marks, and marking criteria.
+          </p>
+          <div>
+            <Button onClick={onCreateExam}>Create Your First Exam</Button>
+          </div>
         </div>
       ) : (
         <div className="border border-stone-200 bg-white">
           <table className="w-full text-sm text-left">
             <thead>
-              <tr className="border-b border-stone-200 text-xs font-semibold text-stone-600 uppercase">
-                <th className="px-4 py-3">Title</th>
+              <tr className="border-b border-stone-200 text-xs font-semibold text-stone-600 uppercase bg-stone-50">
+                <th className="px-4 py-3">Exam Title</th>
                 <th className="px-4 py-3">Subject</th>
                 <th className="px-4 py-3">Questions</th>
-                <th className="px-4 py-3">Created</th>
-                <th className="px-4 py-3"></th>
+                <th className="px-4 py-3">Created Date</th>
+                <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -66,17 +71,17 @@ export default function Dashboard({ onCreateExam, onViewExam }) {
                 >
                   <td className="px-4 py-3 font-medium text-stone-800">{exam.title}</td>
                   <td className="px-4 py-3 text-stone-600">{exam.subject}</td>
-                  <td className="px-4 py-3 text-stone-600">{exam.question_count}</td>
+                  <td className="px-4 py-3 text-stone-600">{exam.question_count} questions</td>
                   <td className="px-4 py-3 text-stone-500 text-xs">
                     {new Date(exam.created_at).toLocaleDateString()}
                   </td>
-                  <td className="px-4 py-3">
-                    <button
+                  <td className="px-4 py-3 text-right">
+                    <Button
                       onClick={() => onViewExam(exam.id)}
-                      className="text-teal-700 hover:text-teal-800 text-xs font-medium transition-colors duration-150"
+                      className="text-xs py-1 px-3"
                     >
-                      View
-                    </button>
+                      View & Manage Submissions &rarr;
+                    </Button>
                   </td>
                 </tr>
               ))}

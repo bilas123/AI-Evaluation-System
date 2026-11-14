@@ -33,4 +33,19 @@ export const logoutUser = () => {
   localStorage.removeItem('username');
 };
 
+export const getExams = async () => {
+  const response = await api.get('/api/exams');
+  return response.data;
+};
+
+export const getExam = async (examId) => {
+  const response = await api.get(`/api/exams/${examId}`);
+  return response.data;
+};
+
+export const createExam = async (examData) => {
+  const response = await api.post('/api/exams', examData);
+  return response.data;
+};
+
 export default api;

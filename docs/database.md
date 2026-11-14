@@ -64,9 +64,9 @@ from app.config import settings
 
 | Table Name | Description | Key Columns | Status |
 |------------|-------------|-------------|--------|
-| `Teacher` | Stores seeded teacher credentials for login authentication. | `id` (PK), `username` (unique), `password_hash` | Active (Day 1 Auth) |
-| `Exam` | Exam definitions and subjects | Pending | Next |
-| `Question` | Questions with reference answers & criteria | Pending | Next |
+| `Teacher` | Stores seeded teacher credentials for login authentication. | `id` (PK), `username` (unique), `password_hash` | Active |
+| `Exam` | Exam definitions: title, subject, and creation timestamp. | `id` (PK), `title`, `subject`, `created_at` | Active |
+| `Question` | Questions belonging to an exam, with grading blueprint. | `id` (PK), `exam_id` (FK→Exam), `question_number`, `question_text`, `max_marks`, `reference_answer`, `marking_criteria` | Active |
 | `Submission` | Student submissions | Pending | Day 2 |
 | `Answer` | Question-level answers and OCR text | Pending | Day 2 |
 

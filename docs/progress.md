@@ -1,26 +1,22 @@
-Current milestone: Day 1 - Teacher Authentication
+Current milestone: Day 1 - Complete
 Completed:
-- Repository structure established (AGENTS.md Section 4)
-- Root .gitignore and CLAUDE.md configured
-- Backend created with FastAPI, SQLModel, SQLite, Pydantic Settings
-- Config.py with .env parsing and CORS support for FRONTEND_ORIGIN
-- SQLite engine and init_db() in db.py with connection check
-- GET /api/health endpoint verifying live SQLite connectivity
-- Teacher database model created in app/models.py
-- Password hashing with bcrypt and JWT creation/validation with PyJWT
-- Teacher auto-seeding on application startup from .env
-- POST /api/auth/login and GET /api/auth/me endpoints in app/routes/auth.py
-- Pytest tests for auth (successful login, bad password, token verification) in tests/test_auth.py
-- Frontend shared components: Button.jsx and Input.jsx adhering to design tokens
-- Frontend Login page (pages/Login.jsx) and authentication flow in App.jsx
-- Axios interceptor automatically attaching Bearer token to authenticated requests
-- Updated docs/database.md with Teacher table registry
+- Repository structure, .gitignore, config, SQLite engine, health endpoint
+- Teacher model, bcrypt password hashing, JWT auth (login + protected routes)
+- Exam and Question models with one-to-many relationship
+- POST /api/exams (create exam with questions), GET /api/exams (list), GET /api/exams/{id} (detail)
+- Frontend Login page with error handling and session persistence
+- Frontend Dashboard page with exams table and empty state
+- Frontend ExamForm page with dynamic question builder and validation
+- Frontend ExamDetail page showing exam info and all questions
+- Simple page navigation with breadcrumbs (Dashboard → Create Exam → Exam Detail)
+- Shared components: Button, Input, Textarea, PageHeader
+- Backend tests: 10 passing (auth + exams + health)
 Working:
-- Teacher login, JWT issuance, protected routes, and session persistence
+- Full Day 1 flow: Login → Dashboard → Create Exam → View Exam
 Known issues:
 - None
 Next task:
-- Day 1 Exam & Question Management: Exam and Question data models, CRUD routes, and Exam creation screen
+- Day 2: Submission creation, image upload with validation, preprocessing, OCR service with Gemini → Tesseract → manual fallback chain
 Verification:
-- Backend pytest: 4 passed in 3.39s (test_auth.py + test_health.py)
-- Frontend production build succeeded (`npm run build`)
+- Backend pytest: 10 passed in 9.63s
+- Frontend production build succeeded

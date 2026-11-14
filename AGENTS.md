@@ -8,7 +8,7 @@
 
 **Timeline: 5 days. Budget: ₹0.** Every tool must be free. Do not add a paid service, a credit-card-required service, or anything that needs a cloud account beyond a free Google AI Studio API key.
 
-Prefer simple, readable code over clever or enterprise-style code. A third-year student must be able to open any file and understand it.
+Prefer simple, readable code over clever or enterprise-style code. A third-year student must be able to open any file and explain it. Code and UI should look hand-built and consistent: see sections 12 and 18.
 
 ---
 
@@ -47,7 +47,7 @@ Every answer needs teacher approval. There is no auto-skip. A "reliable" OCR res
 
 | Layer | Choice | Why |
 |---|---|---|
-| Frontend | React + Vite + Tailwind CSS, Axios | Free, fast setup |
+| Frontend | React + Vite + Tailwind CSS, Axios, one local font via `@fontsource` | Free, fast setup, works offline |
 | Backend | Python + FastAPI + Pydantic | Free, simple, auto docs at `/docs` |
 | Database | **SQLite** via SQLModel | No account, no network, no setup, works offline in the demo |
 | File storage | Local `backend/uploads/` folder | Free, no cloud needed |
@@ -56,7 +56,6 @@ Every answer needs teacher approval. There is no auto-skip. A "reliable" OCR res
 | Fallback OCR | Tesseract (`pytesseract`) | Offline, works when quota is exhausted |
 | Last-resort OCR | Manual typing by the teacher | Always available |
 | Grading LLM | **Gemini** text model (same free key) | Free tier, JSON output supported |
-| Optional LLM fallback | Local Ollama or any OpenAI-compatible free endpoint | Only if quota becomes a problem |
 | OCR metrics | `jiwer` (CER/WER) | Free, gives report evidence |
 | Auth | Single seeded teacher account + JWT (`python-jose` or `PyJWT`) | Minimal, enough for the demo |
 | Tests | `pytest` (backend), manual + one smoke test (frontend) | Free |
@@ -152,8 +151,8 @@ project-root/
 ├── samples/              dummy handwriting images + ground-truth text for evaluation
 ├── docs/
 │   ├── progress.md
-│   ├── architecture.md
-│   └── testing.md
+│   ├── progress.md
+│   └── database.md
 ├── AGENTS.md
 ├── CLAUDE.md             contains: @AGENTS.md
 ├── README.md
@@ -259,7 +258,7 @@ Return clean JSON errors: `{ "detail": "<simple message>" }`. Never return stack
 3. Manual         → teacher types the text; ocr_engine = "manual"
 ```
 
-`ocr_service.py` exposes one function, for example `extract_text(image_path) -> OcrResult`. The rest of the app never imports Gemini or Tesseract directly, so engines can be swapped.
+`ocr_service.py` exposes one plain function, `extract_text(image_path)`, that tries Gemini, then Tesseract, then returns a failed result. Write the chain as simple `try` / `if` code in that one file. Do not build engine classes, base classes, or a plugin system.
 
 ```text
 OcrResult { text, engine, status, note }
@@ -355,35 +354,64 @@ Handle: invalid image, oversized upload, OCR failure, empty OCR, Gemini 429/time
 
 ---
 
-# 12. Frontend UX
+# 12. Frontend UX and Visual Style
 
-Should feel like a small, practical teacher tool, not an "AI demo".
+The app should look like a small tool a teacher or a student developer built with care, not like a generated template. Use **Tailwind CSS** directly, with a tiny set of shared components so everything stays consistent.
 
-**Use:** off-white surfaces, neutral gray text, one restrained accent color, subtle borders, comfortable spacing, simple tables/cards.
-**Avoid:** gradients, glassmorphism, glowing effects, hero sections, "AI-powered" labels, icon overload.
+## Design tokens (set once in the Tailwind config, then reuse)
+
+- **Background:** warm off-white (`stone-50`); surfaces white with a 1px `stone-200` border.
+- **Text:** `stone-800` for body, `stone-500` for secondary text.
+- **One accent color:** deep teal (`teal-700`, hover `teal-800`). Use it only for the primary button, links, and active states.
+- **Status:** show it as plain text in tables ("Needs review", "Approved", "Final"). Use one small colored badge only for the answers that need the teacher's attention (OCR needs review, evaluation failed). Never rely on color alone.
+- **Font:** one free font, installed locally through `@fontsource` so it works offline (suggested: *IBM Plex Sans* or *Source Sans 3*). No second display font.
+- **Radius:** `rounded` on inputs and buttons only. Never `rounded-xl`, `rounded-2xl`, or pill shapes.
+- **Spacing:** stick to the Tailwind 2/3/4/6/8 steps. Do not invent arbitrary values.
+- **Depth:** borders only. No shadows.
+- **Cards:** avoid them. Use tables, plain sections with a border-top, and whitespace. A bordered box is only for the OCR review panels and the login form.
+- **Typography:** two or three sizes only (page title, body, small). Normal weight body text, semibold for titles and table headers.
+- **Motion:** one small, consistent touch everywhere, `transition-colors duration-150` on buttons, links, inputs, and table rows. Nothing else moves: no slide-ins, bounces, fades on page load, or animated counters. Loading is plain text or a small spinner.
+
+## Shared components (build these once, reuse everywhere)
+
+`Button` (primary / secondary / danger), `Input` and `Textarea` (label above the field), `Table`, `PageHeader`, `EmptyState`, and a tiny `Badge` for the few attention states. Do not create more components until a third repeat appears. Do not paste the same long `className` string in many places; put it in a component.
+
+## What makes it feel human-made
+
+- **Plain, specific copy** written for a teacher: "Upload answer image", "Approve text", "Marks out of 10". No marketing language ("Unlock", "Supercharge", "Seamless", "Powered by AI").
+- **No emojis** in the UI. Icons only where they help (upload, delete, warning), and keep them few.
+- **No gradients, no glow, no glassmorphism, no hero banner, no centered three-card feature rows, no decorative blobs.**
+- **Use the app's real terminology:** exam, question, submission, answer, marks, verified text, override. Button text is normal and literal ("Save", "Upload", "Approve", "Evaluate", "Back"), not clever.
+- **Never write "AI-powered", "smart", "intelligent", or "magic"** anywhere in the UI or README. Say "Evaluate" and "Suggested marks".
+- **Left-aligned layouts.** Tables for lists of exams, submissions, and results (not a grid of identical cards).
+- **Realistic sample data** in empty/demo states, e.g. "Data Structures: Unit Test 1", "Student 07". Never "Lorem ipsum", "John Doe", or "Test 123".
+- **Useful empty states:** one sentence plus the next action ("No exams yet. Create your first exam.").
+- **Real states everywhere:** loading text, inline form errors next to the field, disabled buttons with a reason, confirm before destructive actions.
+- **Visible keyboard focus**, readable contrast, labels on every input.
+- **Page titles and a simple breadcrumb** (Exams > Unit Test 1 > Student 07 > Question 2).
+- Layout: a plain top bar (app name, exam name, logout). No sidebar unless a screen truly needs one.
 
 ## Screens
 
-1. **Login** – centered form.
-2. **Dashboard** – exams, submissions, status badges (not evaluated / awaiting approval / evaluated / finalized).
-3. **Exam form** – add questions with max marks, reference answer, criteria.
-4. **Upload** – one slot per question, accepted file types shown.
-5. **OCR Review (most important)**
+1. **Login:** small centered form, app name above it, nothing else.
+2. **Dashboard:** exams table (title, subject, submissions, status). Recent submissions below.
+3. **Exam form:** add questions with max marks, reference answer, marking criteria.
+4. **Upload:** one slot per question with accepted types and size limit shown.
+5. **OCR Review (most important screen):**
 
 ```text
-┌───────────────────┬────────────────────────┐
-│ Original image    │ Editable extracted text│
-│ (zoomable)        │ [?] spans highlighted  │
-└───────────────────┴────────────────────────┘
- Engine used · Status badge      [Re-run OCR] [Reject] [Approve & Continue]
++--------------------+---------------------------+
+| Original image     | Editable extracted text   |
+| (zoomable)         | [?] spans highlighted     |
++--------------------+---------------------------+
+ Engine used | Status badge     [Re-run OCR] [Reject] [Approve and continue]
 ```
 
-   - "Evaluate" stays disabled until the answer is approved.
-   - Show an "OCR engine: manual" badge when the teacher typed it.
-6. **Evaluation** – question, verified answer, reference/criteria, AI marks, feedback, key points found/missing, override input, "Save final marks".
-7. **Results** – total, question-wise marks, feedback, AI vs final marks.
+   "Evaluate" stays disabled until approved. Show an "Typed manually" badge when the teacher typed it.
+6. **Evaluation:** question, verified answer, reference and criteria, suggested marks, feedback, key points found/missing, override field, "Save final marks".
+7. **Results:** total, question-wise marks, feedback, suggested marks vs final marks.
 
-Always include loading, empty, and error states.
+Every screen must have loading, empty, and error states.
 
 ---
 
@@ -408,7 +436,7 @@ Evaluation screen, teacher override, final marks, results page, dashboard, error
 *Done when:* the full flow in "Definition of Done" works in the browser.
 
 **Day 5 – Evidence + Polish**
-Run 10–20 dummy samples through the system, compute OCR CER/WER with `jiwer` (Gemini vs Tesseract if installed), record AI vs teacher marks, write README, `docs/architecture.md`, `docs/testing.md`, rehearse the demo. CSV export only if time remains.
+Run 10–20 dummy samples through the system, compute OCR CER/WER with `jiwer` (Gemini vs Tesseract if installed), record AI vs teacher marks, finish the README (setup, run, test, demo steps), rehearse the demo. CSV export only if time remains.
 *Done when:* the demo runs cleanly from a fresh clone and the report numbers exist.
 
 If behind schedule, drop in this order: CSV/PDF export → statistics → UI polish → evaluation sample count. **Never compromise the P0 flow.**
@@ -532,13 +560,56 @@ Reviewer checks: scope creep, broken features, unnecessary complexity, security 
 
 ---
 
-# 18. Code Quality
+# 18. Code Quality and Style
 
-- Simple functions and clear names (`verified_text`, `final_marks`, `question_number`); avoid `data`, `obj`, `temp`, `x`.
-- No unnecessary design patterns, factories, deep inheritance, or giant utility files.
-- Keep route handlers thin: routes → services → database/external tools. Never put OCR, LLM calls, DB logic, and HTTP handling in one function.
-- Short functions. Comments explain **why**, not what.
-- Add dependencies only with a reason, and only free ones. Pin versions in `requirements.txt` and `package.json`.
+The code should read like a careful student wrote it, not like a framework demo. A team member must be able to open any file and explain it in a viva.
+
+## General
+
+- **Plain and direct.** Simple functions, early returns, ordinary `for` loops. No clever one-liners, no unnecessary abstraction, no generic helpers "just in case".
+- **Small files with one clear job.** Functions about 30 lines or less. If a file passes about 200 lines, ask whether it is doing two jobs.
+- **Consistent naming:** `snake_case` in Python, `camelCase` in JavaScript, `PascalCase` for React components and classes. Use domain words (`verified_text`, `final_marks`, `question_number`, `max_marks`). Avoid `data`, `obj`, `temp`, `result2`, `handle_data`, `process_item`, `utils.py` dumping grounds.
+- **Routes → services → database/external tools.** Route handlers stay thin. Never mix HTTP, OCR, LLM, and DB code in one function.
+- **Type hints on function signatures** in Python. No complicated generics or custom type gymnastics.
+- Add a dependency only with a real reason, and only free ones. Pin versions.
+
+## No fake complexity
+
+Do not create any of these, even if they look "professional": `repositories/`, `factories/`, `providers/`, `interfaces/`, dependency containers, base or abstract classes, abstract OCR/LLM engine classes, generic or catch-all services, plugin systems, or event buses.
+
+The backend is just `routes`, `services`, `models`, `db`, and `config`. If a new folder or layer is proposed, the agent must stop and ask. Swapping an OCR or LLM provider later means editing one service file, not adding abstraction now.
+
+Documentation stays small and matches the real code: `README.md`, `docs/progress.md`, and `docs/database.md`. Do not write architecture documents or long descriptions of things that are not built yet.
+
+## Comments and docs
+
+- Comment **only decisions and non-obvious reasons**. Most files need two or three comments in total. Do not comment what the code obviously does (no `# allow CORS origin from .env` above `add_middleware`). A good comment looks like: `# SQLite needs check_same_thread=False because FastAPI can handle requests on different threads.`
+- No docstring on every function; use a one-line docstring only where the behavior is not obvious.
+- No decorative banners (`# ===== SERVICES =====`), no ASCII art, no "This function does X" restating the name.
+- A `TODO` is allowed only with a concrete reason ("TODO: handle PDF uploads if time allows").
+- README: short and practical (what it is, setup, run, test, demo steps). No badges, no emojis, no marketing text.
+
+## Error handling
+
+- Handle the specific errors listed in section 10. Do not wrap every function in `try/except`.
+- Catch exceptions at the boundary (the OCR call, the Gemini call, file save) and convert them into one simple message. Never swallow errors silently.
+- Use one consistent error response shape across the API.
+
+## Frontend code
+
+- Function components with hooks. Keep state close to where it is used; no global state library.
+- One API file (`services/api.js`) holds every backend call. Pages do not build URLs themselves.
+- Page files stay readable: if JSX gets long, split out a component that is reused or clearly separate.
+- No inline styles. Use Tailwind classes or the shared components.
+
+## Git
+
+- Short, plain commit messages in the imperative: `add exam creation`, `fix ocr fallback when tesseract missing`, `block grading of unapproved text`.
+- One logical change per commit. Commit working states only.
+
+## Review checklist (before every commit)
+
+Would a teammate understand this file? Is anything here unused, duplicated, or over-built? Does the UI use only the shared components and design tokens? Are there leftover debug prints or commented-out code?
 
 ---
 

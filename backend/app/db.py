@@ -11,11 +11,9 @@ engine = create_engine(
 )
 
 def init_db() -> None:
-    """Creates database engine and all registered tables on application startup."""
     SQLModel.metadata.create_all(engine)
 
 def check_db_connection() -> bool:
-    """Performs a trivial SQL query to verify active database connectivity."""
     try:
         with Session(engine) as session:
             session.exec(text("SELECT 1")).one()

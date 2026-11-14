@@ -16,7 +16,6 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Allow frontend origin configured in .env
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.FRONTEND_ORIGIN],

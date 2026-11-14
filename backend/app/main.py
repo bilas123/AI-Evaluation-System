@@ -8,6 +8,7 @@ from app.db import init_db, check_db_connection
 from app.services.auth_service import seed_teacher_if_missing
 from app.routes.auth import router as auth_router
 from app.routes.exams import router as exams_router
+from app.routes.submissions import router as submissions_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -31,6 +32,7 @@ app.add_middleware(
 
 app.include_router(auth_router)
 app.include_router(exams_router)
+app.include_router(submissions_router)
 
 @app.get("/api/health")
 def health():

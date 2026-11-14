@@ -67,8 +67,8 @@ from app.config import settings
 | `Teacher` | Stores seeded teacher credentials for login authentication. | `id` (PK), `username` (unique), `password_hash` | Active |
 | `Exam` | Exam definitions: title, subject, and creation timestamp. | `id` (PK), `title`, `subject`, `created_at` | Active |
 | `Question` | Questions belonging to an exam, with grading blueprint. | `id` (PK), `exam_id` (FK→Exam), `question_number`, `question_text`, `max_marks`, `reference_answer`, `marking_criteria` | Active |
-| `Submission` | Student submissions | Pending | Day 2 |
-| `Answer` | Question-level answers and OCR text | Pending | Day 2 |
+| `Submission` | Student submissions belonging to an exam. | `id` (PK), `exam_id` (FK→Exam), `student_label`, `status`, `created_at` | Active (Day 2) |
+| `Answer` | Question-level answers holding uploaded image path, OCR text, and review state. | `id` (PK), `submission_id` (FK→Submission), `question_id` (FK→Question), `image_path`, `ocr_text`, `ocr_engine`, `ocr_status`, `verification_status` | Active (Day 2) |
 
 *This document will be updated whenever a new table is introduced.*
 

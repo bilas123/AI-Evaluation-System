@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
-  timeout: 5000,
+  timeout: 30000,
 });
 
 api.interceptors.request.use((config) => {
@@ -45,6 +45,39 @@ export const getExam = async (examId) => {
 
 export const createExam = async (examData) => {
   const response = await api.post('/api/exams', examData);
+  return response.data;
+};
+
+export const createSubmission = async (examId, data) => {
+  const response = await api.post(`/api/exams/${examId}/submissions`, data);
+  return response.data;
+};
+
+export const getExamSubmissions = async (examId) => {
+  const response = await api.get(`/api/exams/${examId}/submissions`);
+  return response.data;
+};
+
+export const getSubmission = async (submissionId) => {
+  const response = await api.get(`/api/submissions/${submissionId}`);
+  return response.data;
+};
+
+export const uploadAnswerImage = async (submissionId, questionId, file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await api.post(
+    `/api/submissions/${submissionId}/answers/${questionId}/image`,
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }
+  );
+  return response.data;
+};
+
+export const rerunOcr = async (answerId) => {
+  const response = await api.post(`/api/answers/${answerId}/ocr`);
   return response.data;
 };
 

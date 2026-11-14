@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ExamForm from './pages/ExamForm';
 import ExamDetail from './pages/ExamDetail';
+import Upload from './pages/Upload';
 import Button from './components/Button';
 import { getMe, logoutUser } from './services/api';
 
@@ -10,7 +11,11 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState(localStorage.getItem('username'));
   const [loading, setLoading] = useState(true);
 
-  // Simple page state: { name: 'dashboard' } | { name: 'create-exam' } | { name: 'exam-detail', examId: 1 }
+  // Page state:
+  // { name: 'dashboard' }
+  // { name: 'create-exam' }
+  // { name: 'exam-detail', examId: 1 }
+  // { name: 'upload', submissionId: 1, examId: 1 }
   const [page, setPage] = useState({ name: 'dashboard' });
 
   useEffect(() => {
@@ -59,6 +64,14 @@ export default function App() {
           <ExamDetail
             examId={page.examId}
             onBack={() => setPage({ name: 'dashboard' })}
+            onUploadSubmission={(subId) => setPage({ name: 'upload', submissionId: subId, examId: page.examId })}
+          />
+        );
+      case 'upload':
+        return (
+          <Upload
+            submissionId={page.submissionId}
+            onBack={() => setPage({ name: 'exam-detail', examId: page.examId })}
           />
         );
       default:
@@ -71,12 +84,16 @@ export default function App() {
     }
   };
 
-  // Breadcrumb text
   const breadcrumb = () => {
     switch (page.name) {
-      case 'create-exam': return 'Exams > Create Exam';
-      case 'exam-detail': return 'Exams > Exam Detail';
-      default: return 'Exams';
+      case 'create-exam':
+        return 'Exams > Create Exam';
+      case 'exam-detail':
+        return 'Exams > Exam Detail';
+      case 'upload':
+        return 'Exams > Exam Detail > Upload Answers';
+      default:
+        return 'Exams';
     }
   };
 

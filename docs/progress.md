@@ -1,22 +1,23 @@
-Current milestone: Day 1 - Complete
+Current milestone: Day 2 - Upload + OCR Complete
 Completed:
-- Repository structure, .gitignore, config, SQLite engine, health endpoint
-- Teacher model, bcrypt password hashing, JWT auth (login + protected routes)
-- Exam and Question models with one-to-many relationship
-- POST /api/exams (create exam with questions), GET /api/exams (list), GET /api/exams/{id} (detail)
-- Frontend Login page with error handling and session persistence
-- Frontend Dashboard page with exams table and empty state
-- Frontend ExamForm page with dynamic question builder and validation
-- Frontend ExamDetail page showing exam info and all questions
-- Simple page navigation with breadcrumbs (Dashboard → Create Exam → Exam Detail)
-- Shared components: Button, Input, Textarea, PageHeader
-- Backend tests: 10 passing (auth + exams + health)
+- Submission & Answer database tables with relationships and status values in models.py
+- Image service with Pillow validation, EXIF auto-rotation, downscaling to <= 2000px, and UUID file naming
+- Uploads directory backend/uploads/ configured and gitignored
+- OCR service with Gemini Vision primary -> Tesseract fallback -> Manual fallback chain
+- Deterministic OCR reliability check (reliable / review_required / failed)
+- Endpoints: POST /exams/{id}/submissions, GET /exams/{id}/submissions, GET /submissions/{id}
+- Endpoints: POST /submissions/{id}/answers/{question_id}/image, POST /answers/{id}/ocr, GET /answers/{id}/image
+- Backend test suite: 19 tests passing covering auth, exams, OCR reliability checks, and submission lifecycle
+- Frontend Upload screen with question slots, accepted file indicators, and OCR text/reliability preview
+- Frontend ExamDetail updated with Student Submissions list and creation form
+- Shared Badge component for reliability indicators
+- Pinned requirements in backend/requirements.txt (pillow, python-multipart, google-genai, pytesseract)
 Working:
-- Full Day 1 flow: Login → Dashboard → Create Exam → View Exam
+- Full Day 2 flow: Create Submission -> Upload answer image per question -> Automatic OCR extraction & preview
 Known issues:
 - None
 Next task:
-- Day 2: Submission creation, image upload with validation, preprocessing, OCR service with Gemini → Tesseract → manual fallback chain
+- Day 3: Teacher OCR Verification screen (side-by-side image + editable text + approve/reject) and Gemini Grading service (enforcing grading only for approved text)
 Verification:
-- Backend pytest: 10 passed in 9.63s
-- Frontend production build succeeded
+- Backend pytest: 19 passed in 7.28s
+- Frontend production build succeeded (`npm run build` in 3.89s)

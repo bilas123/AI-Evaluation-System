@@ -1,4 +1,4 @@
-Current milestone: Day 1 - Setup & Guidelines Alignment
+Current milestone: Day 1 - Teacher Authentication
 Completed:
 - Repository structure established (AGENTS.md Section 4)
 - Root .gitignore and CLAUDE.md configured
@@ -6,20 +6,21 @@ Completed:
 - Config.py with .env parsing and CORS support for FRONTEND_ORIGIN
 - SQLite engine and init_db() in db.py with connection check
 - GET /api/health endpoint verifying live SQLite connectivity
-- One backend pytest test for /api/health passing
-- Frontend created with React, Vite, Tailwind CSS v4, and Axios
-- Installed @fontsource/ibm-plex-sans for offline local font rendering per Section 12
-- Aligned UI tokens: warm off-white surface, deep teal accent, strict rounded corners (no pill shapes), border depth
-- Cleaned backend comments and docstrings according to Section 18
-- docs/database.md explaining SQLite, SQLModel, tables, and db.py for beginners
-- README.md with setup, run, and test commands
-- backend/.env.example and frontend/.env.example with placeholders
+- Teacher database model created in app/models.py
+- Password hashing with bcrypt and JWT creation/validation with PyJWT
+- Teacher auto-seeding on application startup from .env
+- POST /api/auth/login and GET /api/auth/me endpoints in app/routes/auth.py
+- Pytest tests for auth (successful login, bad password, token verification) in tests/test_auth.py
+- Frontend shared components: Button.jsx and Input.jsx adhering to design tokens
+- Frontend Login page (pages/Login.jsx) and authentication flow in App.jsx
+- Axios interceptor automatically attaching Bearer token to authenticated requests
+- Updated docs/database.md with Teacher table registry
 Working:
-- Backend and Frontend development servers verified and operational
+- Teacher login, JWT issuance, protected routes, and session persistence
 Known issues:
 - None
 Next task:
-- Day 1 Feature Implementation: Teacher authentication (seeded account + JWT) and Exam creation CRUD
+- Day 1 Exam & Question Management: Exam and Question data models, CRUD routes, and Exam creation screen
 Verification:
-- Backend pytest passed (`1 passed in 3.03s`)
+- Backend pytest: 4 passed in 3.39s (test_auth.py + test_health.py)
 - Frontend production build succeeded (`npm run build`)

@@ -62,9 +62,13 @@ from app.config import settings
 
 ## 5. Table Registry
 
-| Table Name | Description | Status |
-|------------|-------------|--------|
-| *(None yet)* | Initial setup milestone | Pending Day 1 Exam/Auth |
+| Table Name | Description | Key Columns | Status |
+|------------|-------------|-------------|--------|
+| `Teacher` | Stores seeded teacher credentials for login authentication. | `id` (PK), `username` (unique), `password_hash` | Active (Day 1 Auth) |
+| `Exam` | Exam definitions and subjects | Pending | Next |
+| `Question` | Questions with reference answers & criteria | Pending | Next |
+| `Submission` | Student submissions | Pending | Day 2 |
+| `Answer` | Question-level answers and OCR text | Pending | Day 2 |
 
 *This document will be updated whenever a new table is introduced.*
 

@@ -4,4 +4,5 @@ sqlmodel==0.0.48
 pydantic-settings==2.16.2
 pytest==9.2.0
 httpx==0.28.1
-
+bcrypt==5.0.0
+pyjwt==2.15.1

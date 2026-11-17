@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     TEACHER_USERNAME: str = "teacher"
     TEACHER_PASSWORD: str = "teacher123"
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-1.5-flash"
+    GEMINI_MODEL: str = "gemini-3.8-flash"
     FRONTEND_ORIGIN: str = "http://localhost:5173"
 
     model_config = SettingsConfigDict(

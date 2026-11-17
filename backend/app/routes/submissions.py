@@ -328,14 +328,19 @@ def evaluate_answer_route(
                 marking_criteria=question.marking_criteria,
                 verified_text=answer.verified_text,
             )
-        except Exception:
+        except Exception as exc:
             answer.evaluation_status = "failed"
             answer.updated_at = datetime.now(timezone.utc)
             session.add(answer)
             session.commit()
+            err_msg = str(exc)
+            if "503" in err_msg or "high demand" in err_msg.lower():
+                detail = "AI model is temporarily busy. Please try evaluating again in a few moments."
+            else:
+                detail = f"AI evaluation failed: {err_msg[:120]}"
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail="AI evaluation failed"
+                detail=detail
             )
 
         answer.ai_marks = result["marks"]

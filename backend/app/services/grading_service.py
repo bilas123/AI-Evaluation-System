@@ -56,6 +56,13 @@ def evaluate_answer(
                 )
             )
             raw = response.text.strip()
+            if raw.startswith("```"):
+                lines = raw.splitlines()
+                if lines[0].startswith("```"):
+                    lines = lines[1:]
+                if lines and lines[-1].startswith("```"):
+                    lines = lines[:-1]
+                raw = "\n".join(lines).strip()
             data = json.loads(raw)
 
             marks = float(data.get("marks", 0))

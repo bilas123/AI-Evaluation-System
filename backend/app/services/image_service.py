@@ -38,8 +38,8 @@ def process_and_save_image(file: UploadFile) -> str:
     if image.mode != "RGB":
         image = image.convert("RGB")
 
-    # Downscale so the longest side is <= 2000px
-    max_dim = 2000
+    # Downscale so the longest side is <= 1400px (optimal for fast OCR transfer)
+    max_dim = 1400
     width, height = image.size
     if max(width, height) > max_dim:
         scale = max_dim / max(width, height)
@@ -49,6 +49,6 @@ def process_and_save_image(file: UploadFile) -> str:
     # Save to uploads with a unique UUID filename
     filename = f"{uuid.uuid4().hex}.jpg"
     dest_path = UPLOAD_DIR / filename
-    image.save(dest_path, "JPEG", quality=90)
+    image.save(dest_path, "JPEG", quality=85)
 
     return str(dest_path)

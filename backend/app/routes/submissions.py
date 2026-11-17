@@ -17,6 +17,15 @@ from app.services.grading_service import evaluate_answer
 
 router = APIRouter(prefix="/api", tags=["submissions"])
 
+def _reset_evaluation(answer: Answer):
+    answer.evaluation_status = "not_evaluated"
+    answer.ai_marks = None
+    answer.ai_feedback = None
+    answer.key_points_found = None
+    answer.missing_points = None
+    answer.teacher_marks = None
+    answer.final_marks = None
+
 def _build_answer_read(answer: Answer, question: Question) -> AnswerRead:
     return AnswerRead(
         id=answer.id,
@@ -160,13 +169,7 @@ def upload_answer_image(
         answer.ocr_note = ocr_result.note
         answer.verification_status = "unverified"
         answer.verified_text = None
-        answer.evaluation_status = "not_evaluated"
-        answer.ai_marks = None
-        answer.ai_feedback = None
-        answer.key_points_found = None
-        answer.missing_points = None
-        answer.teacher_marks = None
-        answer.final_marks = None
+        _reset_evaluation(answer)
         answer.updated_at = datetime.now(timezone.utc)
 
         submission.status = "in_progress"
@@ -198,13 +201,7 @@ def rerun_ocr(
         answer.ocr_note = ocr_result.note
         answer.verification_status = "unverified"
         answer.verified_text = None
-        answer.evaluation_status = "not_evaluated"
-        answer.ai_marks = None
-        answer.ai_feedback = None
-        answer.key_points_found = None
-        answer.missing_points = None
-        answer.teacher_marks = None
-        answer.final_marks = None
+        _reset_evaluation(answer)
         answer.updated_at = datetime.now(timezone.utc)
 
         session.add(answer)
@@ -251,13 +248,7 @@ def verify_answer_text(
 
         # Modifying verified text invalidates any previous evaluation per AGENTS.md
         if answer.evaluation_status in ["evaluated", "finalized"]:
-            answer.evaluation_status = "not_evaluated"
-            answer.ai_marks = None
-            answer.ai_feedback = None
-            answer.key_points_found = None
-            answer.missing_points = None
-            answer.teacher_marks = None
-            answer.final_marks = None
+            _reset_evaluation(answer)
 
         answer.updated_at = datetime.now(timezone.utc)
         session.add(answer)
@@ -284,13 +275,7 @@ def reject_answer(
         answer.verified_text = None
 
         if answer.evaluation_status in ["evaluated", "finalized"]:
-            answer.evaluation_status = "not_evaluated"
-            answer.ai_marks = None
-            answer.ai_feedback = None
-            answer.key_points_found = None
-            answer.missing_points = None
-            answer.teacher_marks = None
-            answer.final_marks = None
+            _reset_evaluation(answer)
 
         answer.updated_at = datetime.now(timezone.utc)
         session.add(answer)

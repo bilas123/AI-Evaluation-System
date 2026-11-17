@@ -4,7 +4,14 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import { getExam, getExamSubmissions, createSubmission } from '../services/api';
 
-export default function ExamDetail({ examId, onBack, onUploadSubmission, onReviewSubmission, onEvaluateSubmission }) {
+export default function ExamDetail({
+  examId,
+  onBack,
+  onUploadSubmission,
+  onReviewSubmission,
+  onEvaluateSubmission,
+  onViewResults,
+}) {
   const [exam, setExam] = useState(null);
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -71,7 +78,14 @@ export default function ExamDetail({ examId, onBack, onUploadSubmission, onRevie
   return (
     <div className="space-y-6">
       <PageHeader title={exam.title}>
-        <Button variant="secondary" onClick={onBack}>Back</Button>
+        <div className="flex items-center space-x-2">
+          {onViewResults && (
+            <Button variant="secondary" onClick={onViewResults}>
+              View Results
+            </Button>
+          )}
+          <Button variant="secondary" onClick={onBack}>Back</Button>
+        </div>
       </PageHeader>
 
       {/* Exam meta summary */}

@@ -6,6 +6,7 @@ import ExamDetail from './pages/ExamDetail';
 import Upload from './pages/Upload';
 import OcrReview from './pages/OcrReview';
 import Evaluation from './pages/Evaluation';
+import Results from './pages/Results';
 import Button from './components/Button';
 import { getMe, logoutUser } from './services/api';
 
@@ -71,6 +72,7 @@ export default function App() {
             onUploadSubmission={(subId) => setPage({ name: 'upload', submissionId: subId, examId: page.examId })}
             onReviewSubmission={(subId) => setPage({ name: 'ocr-review', submissionId: subId, examId: page.examId })}
             onEvaluateSubmission={(subId) => setPage({ name: 'evaluation', submissionId: subId, examId: page.examId })}
+            onViewResults={() => setPage({ name: 'results', examId: page.examId })}
           />
         );
       case 'upload':
@@ -94,7 +96,15 @@ export default function App() {
           <Evaluation
             submissionId={page.submissionId}
             onBack={() => setPage({ name: 'ocr-review', submissionId: page.submissionId, examId: page.examId })}
-            onViewResults={() => setPage({ name: 'exam-detail', examId: page.examId })}
+            onViewResults={() => setPage({ name: 'results', examId: page.examId })}
+          />
+        );
+      case 'results':
+        return (
+          <Results
+            examId={page.examId}
+            onBack={() => setPage({ name: 'exam-detail', examId: page.examId })}
+            onEvaluateSubmission={(subId) => setPage({ name: 'evaluation', submissionId: subId, examId: page.examId })}
           />
         );
       default:
@@ -119,6 +129,8 @@ export default function App() {
         return 'Exams > Exam Detail > Review OCR';
       case 'evaluation':
         return 'Exams > Exam Detail > Evaluate Answers';
+      case 'results':
+        return 'Exams > Exam Detail > Results';
       default:
         return 'Exams';
     }

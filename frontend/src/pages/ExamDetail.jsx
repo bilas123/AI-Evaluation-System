@@ -4,7 +4,7 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import { getExam, getExamSubmissions, createSubmission } from '../services/api';
 
-export default function ExamDetail({ examId, onBack, onUploadSubmission }) {
+export default function ExamDetail({ examId, onBack, onUploadSubmission, onReviewSubmission, onEvaluateSubmission }) {
   const [exam, setExam] = useState(null);
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -143,12 +143,32 @@ export default function ExamDetail({ examId, onBack, onUploadSubmission }) {
                         {new Date(sub.created_at).toLocaleDateString()}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <Button
-                          onClick={() => onUploadSubmission(sub.id)}
-                          className="text-xs py-1 px-3"
-                        >
-                          Upload / Manage Answers
-                        </Button>
+                        <div className="flex items-center justify-end space-x-2">
+                          <Button
+                            variant="secondary"
+                            onClick={() => onUploadSubmission(sub.id)}
+                            className="text-xs py-1 px-2.5"
+                          >
+                            Upload
+                          </Button>
+                          {uploadedCount > 0 && onReviewSubmission && (
+                            <Button
+                              variant="secondary"
+                              onClick={() => onReviewSubmission(sub.id)}
+                              className="text-xs py-1 px-2.5"
+                            >
+                              Review OCR
+                            </Button>
+                          )}
+                          {sub.answers.some((a) => a.verification_status === 'approved') && onEvaluateSubmission && (
+                            <Button
+                              onClick={() => onEvaluateSubmission(sub.id)}
+                              className="text-xs py-1 px-2.5"
+                            >
+                              Evaluate
+                            </Button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );

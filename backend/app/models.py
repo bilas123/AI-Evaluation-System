@@ -115,6 +115,8 @@ class AnswerRead(SQLModel):
     verification_status: str
     ai_marks: Optional[float] = None
     ai_feedback: Optional[str] = None
+    key_points_found: Optional[str] = None  # JSON string
+    missing_points: Optional[str] = None    # JSON string
     teacher_marks: Optional[float] = None
     final_marks: Optional[float] = None
     evaluation_status: str
@@ -126,3 +128,9 @@ class SubmissionRead(SQLModel):
     status: str
     created_at: datetime
     answers: list[AnswerRead] = []
+
+class VerifyTextRequest(SQLModel):
+    text: str
+
+class OverrideMarksRequest(SQLModel):
+    marks: float

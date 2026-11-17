@@ -4,7 +4,7 @@ import Button from '../components/Button';
 import Badge from '../components/Badge';
 import { getSubmission, uploadAnswerImage, rerunOcr } from '../services/api';
 
-export default function Upload({ submissionId, onBack }) {
+export default function Upload({ submissionId, onBack, onProceedToReview }) {
   const [submission, setSubmission] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -219,6 +219,19 @@ export default function Upload({ submissionId, onBack }) {
           );
         })}
       </div>
+
+      {submission.answers.some((a) => a.image_path) && (
+        <div className="border border-stone-200 bg-white p-4 mt-6 flex items-center justify-between">
+          <span className="text-sm text-stone-600">
+            Answers uploaded: {submission.answers.filter((a) => a.image_path).length} of {submission.answers.length}
+          </span>
+          {onProceedToReview && (
+            <Button onClick={onProceedToReview}>
+              Proceed to Review OCR
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

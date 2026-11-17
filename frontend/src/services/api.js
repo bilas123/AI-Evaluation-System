@@ -81,4 +81,29 @@ export const rerunOcr = async (answerId) => {
   return response.data;
 };
 
+export const approveVerifiedText = async (answerId, text) => {
+  const response = await api.put(`/api/answers/${answerId}/verified-text`, { text });
+  return response.data;
+};
+
+export const rejectAnswer = async (answerId) => {
+  const response = await api.post(`/api/answers/${answerId}/reject`);
+  return response.data;
+};
+
+export const evaluateAnswer = async (answerId) => {
+  const response = await api.post(`/api/answers/${answerId}/evaluate`);
+  return response.data;
+};
+
+export const overrideMarks = async (answerId, marks) => {
+  const response = await api.put(`/api/answers/${answerId}/marks`, { marks });
+  return response.data;
+};
+
+export const getExamResults = async (examId) => {
+  const response = await api.get(`/api/exams/${examId}/results`);
+  return response.data;
+};
+
 export default api;

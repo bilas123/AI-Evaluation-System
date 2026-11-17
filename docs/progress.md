@@ -1,23 +1,23 @@
-Current milestone: Day 2 - Upload + OCR Complete
+Current milestone: Day 3 - OCR Verification + AI Evaluation Complete
 Completed:
-- Submission & Answer database tables with relationships and status values in models.py
-- Image service with Pillow validation, EXIF auto-rotation, downscaling to <= 2000px, and UUID file naming
-- Uploads directory backend/uploads/ configured and gitignored
-- OCR service with Gemini Vision primary -> Tesseract fallback -> Manual fallback chain
-- Deterministic OCR reliability check (reliable / review_required / failed)
-- Endpoints: POST /exams/{id}/submissions, GET /exams/{id}/submissions, GET /submissions/{id}
-- Endpoints: POST /submissions/{id}/answers/{question_id}/image, POST /answers/{id}/ocr, GET /answers/{id}/image
-- Backend test suite: 19 tests passing covering auth, exams, OCR reliability checks, and submission lifecycle
-- Frontend Upload screen with question slots, accepted file indicators, and OCR text/reliability preview
-- Frontend ExamDetail updated with Student Submissions list and creation form
-- Shared Badge component for reliability indicators
-- Pinned requirements in backend/requirements.txt (pillow, python-multipart, google-genai, pytesseract)
+- Grading service (backend/app/services/grading_service.py) with structured prompt, injection delimiters, Gemini integration, and validation
+- Strict grading guard: HTTP 409 returned if student answer text is not approved or empty
+- Endpoints: PUT /api/answers/{id}/verified-text (approves text; invalidates prior evaluations if edited)
+- Endpoints: POST /api/answers/{id}/reject (marks answer rejected, excludes from evaluation)
+- Endpoints: POST /api/answers/{id}/evaluate (executes AI rubric evaluation, calculates suggested marks, key points, missing points)
+- Endpoints: PUT /api/answers/{id}/marks (allows teacher mark override, sets final_marks and finalized status)
+- Endpoints: GET /api/exams/{id}/results (exam-level summary, student-wise totals and question breakdowns)
+- Backend test suite: 22 tests passing covering full evaluation lifecycle, verification guards, teacher override, and results
+- Frontend OcrReview screen (frontend/src/pages/OcrReview.jsx) with side-by-side original handwriting image (with click-to-zoom) + editable text + approve/reject actions
+- Frontend Evaluation screen (frontend/src/pages/Evaluation.jsx) showing verified student text, AI suggested marks, feedback, key points found (✓), missing points (✗), and teacher mark override input
+- Frontend navigation and App routing updated with breadcrumbs and seamless transitions between Upload -> Review OCR -> Evaluate
 Working:
-- Full Day 2 flow: Create Submission -> Upload answer image per question -> Automatic OCR extraction & preview
+- Complete Day 1 to Day 3 flow:
+  Login -> Create Exam -> Create Submission -> Upload Answer Images -> Review & Approve OCR -> Evaluate with AI -> Teacher Mark Override -> Results
 Known issues:
 - None
 Next task:
-- Day 3: Teacher OCR Verification screen (side-by-side image + editable text + approve/reject) and Gemini Grading service (enforcing grading only for approved text)
+- Day 4: Results dashboard page and UI polish (batch summary, exports if needed)
 Verification:
-- Backend pytest: 19 passed in 7.28s
-- Frontend production build succeeded (`npm run build` in 3.89s)
+- Backend pytest: 22 passed in 5.90s
+- Frontend production build succeeded (`npm run build` in 2.57s)

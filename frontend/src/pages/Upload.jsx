@@ -50,7 +50,9 @@ export default function Upload({ submissionId, onBack, onProceedToReview }) {
         return copy;
       });
     } catch (err) {
-      const msg = err.response?.data?.detail || 'Image upload or OCR failed.';
+      const msg = err.code === 'ECONNABORTED'
+        ? 'Processing took longer than expected. Please refresh the page to see the extracted text.'
+        : err.response?.data?.detail || 'Image upload or OCR failed.';
       setError(msg);
     } finally {
       setUploadingQuestionId(null);
